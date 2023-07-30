@@ -1,0 +1,57 @@
+UBUNTU
+
+venv предназначен для создания виртуального окружения (далее просто окружение) для вашего проекта.
+$ sudo apt install python3-venv # установить venv
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ which python
+$ deactivate
+$ pip
+$ pip -V
+$ pip list # покажет все установленные библиотеки
+$ pip install six
+$ pip freeze> reqiurements.txt // записать в реквайментс, что установлено
+можно прописать reqiurements.txt и запустить команду
+$ pip install -Ur reqiurements.txt
+*****************************
+
+python -m pip install Django // установка в pip
+
+django-admin startproject hello // установка нового проекта
+python manage.py migrate // Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+python manage.py runserver 127.0.0.1:8001  // запуск
+
+***********************
+*************************
+***************************
+python3 -m venv venv
+source venv/bin/activate
+echo "Django==4.1.7" > reqiurements.txt
+echo "psycopg2-binary==2.9.5" >> reqiurements.txt
+pip install -Ur reqiurements.txt
+django-admin startproject hello_world .
+python manage.py migrate
+python manage.py runserver 127.0.0.1:8004
+
+sudo su postgres
+psql
+CREATE DATABASE coredb;
+CREATE USER core WITH PASSWORD 'wCh29&HE&T83';
+GRANT ALL PRIVILEGES ON DATABASE coredb TO core;
+ALTER USER core CREATEDB;
+exit
+
+В файле settings.py меняем:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'coredb',
+        'USER': 'core',
+        'PASSWORD': 'wCh29&HE&T83',
+        'HOST': 'localhost',
+        'PORT': '5342',
+    }
+}
+
+python manage.py migrate
+# Great! We’ve just configured Django with PostgreSQL.

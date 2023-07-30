@@ -1,0 +1,43 @@
+//Use the ALTER USER command and change the authentication method to log into MySQL as root:
+
+which mysqld
+
+sudo mysql -p
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Olordjesus_1991_!';
+
+//
+mysql –u root –p // Now try to access MySQL with root. In the terminal,
+// Enter the password you used with the ALTER USER command. Do not type in the system password to access MySQL as it will not work. If everything worked fine, you should see the MySQL welcome message.
+//
+
+
+
+show databases;
+
+use recipes;
+
+show tables;
+
+create database recipes;
+
+
+
+
+
+select * from recipes;
+
+
+CREATE TABLE recipes (
+  recipe_id INT NOT NULL,
+  recipe_name VARCHAR(30) NOT NULL,
+  PRIMARY KEY (recipe_id),
+  UNIQUE (recipe_name)
+);
+
+INSERT INTO recipes 
+    (recipe_id, recipe_name) 
+VALUES 
+    (1,"Tacos"),
+    (2,"Tomato Soup"),
+    (3,"Grilled Cheese");

@@ -1,0 +1,25 @@
+What is the Django MVT architecture?
+MVT architecture is the software design pattern used by the Django web framework.
+
+MVT stands for Model – View – Template.
+
+1) Model
+Provides the interface for the data stored in the database.
+
+2) Template
+Templates are responsible for the entire User Interface completely. It handles all the static parts of the webpage along with the HTML, which the users visiting the webpage will perceive. 
+
+3) Views
+Views act as a link between the Model data and the Templates. 
+
+Views are responsible for handling all the business logic behind the web app. It acts as a bridge between Models and Templates.
+
+It sees the user request,  retrieves appropriate data from the database, then renders back the template along with retrieved data.
+
+Control Flow of MVT
+
+1.The user sends a URL request for a resource to Django.
+2.Django framework then searches for the URL resource.
+3.If the URL path links up to a View, then that particular View is called.
+4.The View will then interact with the Model and retrieve the appropriate data from the database.
+5.The View then renders back an appropriate template along with the retrieved data to the user.

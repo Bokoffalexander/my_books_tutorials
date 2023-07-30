@@ -1,0 +1,8 @@
+---
+- name: sample book
+  hosts: ansible_client
+  remote_user: san
+  become: true
+  tasks:
+    - name: Print message
+      ansible.builtin.shell: echo "Hello" > helllllllo.txt

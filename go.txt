@@ -1,0 +1,54 @@
+Go (часто также golang) — компилируемый многопоточный язык программирования, 
+разработанный внутри компании Google[8]. 
+Разработка Go началась в сентябре 2007 года, 
+занимавшиеся до этого проектом разработки операционной системы Inferno. 
+Официально язык был представлен в ноябре 2009 года. 
+На данный момент поддержка официального компилятора, 
+разрабатываемого создателями языка, осуществляется для операционных систем 
+FreeBSD, OpenBSD, Linux, macOS, Windows, Android, Solaris. 
+
+*************************************************************
+Installing Golang using snap on Ubuntu
+
+Open the terminal window and then type the 
+following snap command to install the latest Go lang:
+
+$ sudo snap install go --classic
+
+This will install Go programming language: 
+1. compiler, 
+2. linker, 
+3. stdlib. 
+
+You will see confirmation as follows:
+
+go 1.20.5 from Canonical✓ installed
+
+Now, jump to testing section:
+*************************************************************
+//hello.go
+package main
+
+//Import OS and fmt packages
+import (
+	"fmt"
+	"os"
+)
+
+//Let us start
+func main(){
+	fmt.Println("Hi, world")
+	fmt.Println(os.Getenv("USER"), " Let us be friends!")
+	//Read Linux $USER environment variable
+}
+*************************************************************
+
+Build/compile packages and dependencies:
+$ go build hello.go
+$ ls
+$ ./hello
+
+*************************************************************
+go fmt hello1.go // formatting your code
+*************************************************************
+

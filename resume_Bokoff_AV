@@ -1,0 +1,296 @@
+##################################
+Подготовка удаленного хост-сервера:
+
+Зашел через терминал на хост-сервер через:
+ssh root@77.232.139.236
+
+Создал нового пользователя:
+adduser san
+Повысил права этого пользователя: 
+usermod -aG sudo san
+
+Отредактировал конфигурационный файл SSH-сервера:
+nano /etc/ssh/sshd_config
+Поменял ssh-вход на сервер с порта 22 на порт 1991.
+Запретил ssh-соединение через root.
+
+Теперь вход на удаленный сервер:
+ssh -p 1991 san@77.232.139.236
+(запросит password)
+
+
+##################################
+Устанавливал Mysql, PostgreSql на удаленные Linux сервера. 
+Проектировал и создавал Базы Данных.
+
+Вход в postgresql:
+sudo -i -u postgres
+
+Зададим пароль для суперюзера postgres:
+ALTER ROLE postgres WITH PASSWORD '123':
+
+Создадим базу данных и и подключимся к ней:
+createdb mydb
+psql mydb
+
+Создадим таблицу book:
+create table book (book_id SERIAL PRIMARY KEY, title CHARACTER VARYING(50), author CHARACTER VARYING(30), price DECIMAL(8,2),amount INTEGER);
+
+Заполним таблицу 6-ю книгами:
+INSERT INTO book VALUES (1, 'Мастер и Маргарита', 'Булгаков М.А.', 670.99, 3);
+INSERT INTO book VALUES (2, 'Белая гвардия', 'Булгаков М.А.', 540.50, 5);
+INSERT INTO book VALUES (3, 'Идиот', 'Достоевский Ф.М.', 460.00, 10);
+INSERT INTO book VALUES (4, 'Братья Карамазовы', 'Достоевский Ф.М.', 799.01, 3);
+INSERT INTO book VALUES (5, 'Игрок', 'Достоевский Ф.М.', 480.50, 10);
+INSERT INTO book VALUES (6, 'Стихотворения и поэмы', 'Есенин С.А.', 650.00, 15);
+
+Создадим нового пользователя для postgresql:
+CREATE USER user WITH PASSWORD 'user_password';
+GRANT CONNECT ON DATABASE user_database TO user;
+GRANT USAGE ON SCHEMA public TO user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO user;
+
+По дефолту PostgreSQL сконфигурирован так, что связан с "localhost".
+Это можно проверить командой:
+netstat -nlt // 127.0.0.1:5432
+
+Сделаем базу данных доступной для подключения извне:
+
+а)В файле 
+/etc/postgresql/12/main/postgresql.conf 
+сменим директиву:
+listen_addresses = 'localhost' на
+listen_addresses = '*'
+netstat -nlt // 0.0.0.0:5432 на всех сетевых интерфейсах сервера
+
+б)В конфигурационном файле базы данных
+/etc/postgresql/11/main/pg_hba.conf 
+добавим строки аутентификации:
+host user_database user 0.0.0.0/0 password // IPv4 network
+host user_database user ::/0 password      // IPv6 network
+
+в)Перезагрузим сервер postgresql: 
+sudo systemctl stop postgresql && systemctl start postgresql
+Готово:
+PostgreSQL прослушивает все доступные сетевые интерфейсы и ждёт подключения от user.
+
+Можно подключиться:
+sudo psql -h 77.232.139.236 -U user -d user_database
+
+А можно написать скрипт на питоне и подключиться:
+https://github.com/Bokoffalexander/python_remote_base/blob/main/base_remote.py
+##################################
+
+Пример запроса к таблице book:
+https://github.com/Bokoffalexander/myfiles/blob/main/sql_query_bookDB.txt
+
+##################################
+Ниже создание базы данных.
+Нормализация баз данных 1NF 2NF 3NF..
+Атомарно и из одной таблицы сделали три.
+https://github.com/Bokoffalexander/my_postgres_code/blob/main/1NF_code.txt
+
+Пример Джоина трех таблиц:
+SELECT t1.col, t3.col 
+FROM t1 JOIN t2 ON t1.primarykey = t2.foreignkey
+JOIN t3 ON t2.primarykey = t3.foreignkey
+
+В файле 1NF_code.txt:
+Из трех таблиц сделаем одну, используя Джоин:
+SELECT myposts.postname, tags.tagname FROM myposts FULL OUTER JOIN posts_to_tags ON posts_to_tags.post_id=myposts.id JOIN tags ON posts_to_tags.tag_id=tags.id;
+##################################
+Писал простые скрипты в bash на Ubuntu
+https://github.com/Bokoffalexander/myfiles/blob/main/Terminal.txt
+##################################
+PERL
+
+а)Основы синтаксиса перла.
+Базовые переменные $ @ %,Условия,Циклы,Открыть файл file.txt
+https://github.com/Bokoffalexander/perl_basics
+
+б)Создадим модуль, опишем функцию, вызовем ее из другого файла.
+Важно прописать путь до пакета.
+https://github.com/Bokoffalexander/perl_function
+
+в)Простой однострочник, выводящий даты выпуска фильмов с любого сайта.
+Скачиваем из программы страницу сайта, (используя system).
+Вызываем написанный однострочник com_reg.sh,
+Парсим скачанный файл, используя регулярные выражения
+https://github.com/Bokoffalexander/perl_film_rate_date
+
+г)Создадим программу,она будет подключаться к нашей базе данных.
+И по заданному SQL запросу: имя столбца и айди книги.
+Будет выдавать нам результат в терминал: нужную ячейку.
+https://github.com/Bokoffalexander/perl_postgres
+
+д)Создадим простой пакет-класс Юзеры, а в другой программе его экземпляры. 
+https://github.com/Bokoffalexander/Perl_my_example_OOP
+##################################
+Django проект.
+
+Написал проект на python, используя Django, postgres, nginx, gunicorn, docker, git.
+Можно зарегистрироваться на моем сайте http://3vb.ru:5005/ и добавлять свои топики, а потом по каждой теме сделать несколько записей.
+Каждый пользователь видит только свои темы и записи к ним.
+Незарегистрированный пользователь не увидит никаких тем и записей.
+
+Разрабатывал на локальной машине с виртуальным окружением на python.(urls.py, views.py, models.py, forms.py и шаблон base.html, чтобы не повторять код) 
+Можно добавлять данные через /admin/ , а можно через ORM.
+
+Залил свой проект на хост-сервер через ssh
+
+Перевел с sqlite на postgres, и подключил gunicorn и nginx -прокси сервер (nginx.conf)- все это в контейнер.
+Несколько контейнеров через docker-compose. 
+Деплой проекта (делал без переменных .env, а виртуальное окружение venv удалил) на хостинге 3vb.ru:5005 (user2 пароль: 2)
+Ниже этот проект на гитхабе (название просто понравилось, но не связано с django girls сайтом)
+https://github.com/Bokoffalexander/django_girls_postgres_nginx_docker
+##################################
+Пример простого проекта Django DRF: 
+Django Rest API
+
+Сделал API: которая выводит данные в формате JSON.
+Можно получить данные через API, а можно отправить через API.
+
+Посмотреть код можно здесь
+https://github.com/Bokoffalexander/rest_simple
+
+Проверить на моем сервере
+http://77.232.139.236:4004/       //это получить
+http://77.232.139.236:4004/add/   //это добавить
+##################################
+Использование GITHUB
+
+Сначала нужно сгенерировать ssh-ключи, а затем один из них (публичный) добавить
+в настройки профиля GitHub, а не репозитория, чтобы управлять всеми репозиториями.
+
+# Создание ssh-ключей
+ssh-keygen -t ed25519 -C "bokoffalexander@gmail.com"
+# Дальше будет несколько вопросов. На все вопросы нужно нажимать Enter.
+
+# Запуск агента ssh, который следит за ключами
+eval "$(ssh-agent -s)"
+
+# Добавления нового ssh-ключа в агент
+ssh-add ~/.ssh/id_ed25519
+
+# Скопируем публичный ключ
+cat /home/san/.ssh/id_ed25519.pub
+
+Создаем новый пустой репозиторий Bokoffalexander/project
+
+Git - через Терминал
+Заходим в директорию проекта на локальном компьютере,
+где у нас все файлы и вбиваем команды:
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin git@github.com:Bokoffalexander/project.git # А не https://..
+git push -u origin main
+
+(не просит ввести user и password)
+Если кто-то пушнул в репозиторий, то делаем 
+git pull
+##################################
+Использование ORM в Django
+
+python manage.py shell
+Создадим новый топик для юзера с id=1.
+>>> from django_girls_app.models import Topic
+>>> from django.contrib.auth.models import User
+>>> top = Topic(text="Here new topic", owner=User.objects.get(id=1))
+>>>top.save()
+>>>
+
+Создадим новую запись для темы с id=2.
+>>> from django_girls_app.models import Topic
+>>> from django_girls_app.models import Entry
+>>> entr = Entry(text="I You We", topic=Topic.objects.get(id=2))
+>>> entr.save()
+>>>
+##################################
+Сайт-маршрутизатор
+
+Писал свой сайт на HTML,CSS,JavaScript
+https://bokoffalexander.github.io/different_sites/
+##################################
+Сортировки
+
+Писал на python сортировки: быстрая, слияние.
+Ниже сортировка быстрая
+https://replit.com/@AlieksandrBoko2/SnappyNotedEngineer#main.py
+Ниже сортировка слиянием
+https://replit.com/@AlieksandrBoko2/ImportantDistortedNonagon#main.py
+
+Си - сортировки.
+Ниже Сортировка слиянием
+https://replit.com/@AlieksandrBoko2/ClosedBelovedDemand#main.c
+##################################
+Построение графиков:
+Cи вызывает R-скрипт и строит график
+https://replit.com/@AlieksandrBoko2/WordyLimpingDisks#main.c
+##################################
+Простой сайт на php:
+https://php-site.alieksandrboko2.repl.co/
+##################################
+GO ПРОЕКТЫ
+
+а) Простой веб сервер на Go 
+Описание: Небольшой веб-сервер. Получает из строки запроса значение переменной name и age, а затем выводит эти значения в окно браузера.
+
+Залил свой проект на хост-сервер через ssh
+
+Установил latest Go lang на Ubuntu:
+$ sudo snap install go --classic
+
+Установились Go: 
+  1. компилятор
+  2. линкер
+  3. стандартная библиотека stdlib
+
+Скомпилировал написанный файл: go build server.go
+Запустил в фоновом режиме: ./server &
+
+Перейдите по сслыкам ниже и изменяйте значение переменной
+
+// запрос с строке: http://3vb.ru:6006/?name=Sasha&age=31 // ответ в браузере: My name is Sasha. Age is 31.
+
+// запрос с строке: http://3vb.ru:6006/city/?city=Rostov-on-Don // ответ в браузере: My city is Rostov-on-Don.
+
+Посмотреть код на моем Гитхаб репозитории:
+https://github.com/Bokoffalexander/go_humble_server
+(localhost можно поменять на 77.232.139.236 или 3vb.ru, так как есть свой домен)
+
+б) Go - ПРОЕКТ
+Удаляем все тайм-коды из файла.
+
+Мне часто надо удалять тайм-коды с видео на Ютюб.
+Написал программу на go.
+
+Посмотреть код на гитхабе
+https://github.com/Bokoffalexander/go_to_DELETE_ALL_TIMECODE
+(Для запуска: /main text.txt)
+
+в) Go - ПРОЕКТ
+
+Печатает количество дублируемых строк, которые появились больше 1 раза.
+Что в input:  
+Считывает стандартный ввод Stdin или
+считыввает из файлов (в аргумент передаем имя файла.txt).
+Пример: ./duplication file.txt 
+
+Посмотреть код на гитхабе:
+https://github.com/Bokoffalexander/go_duplication_lines
+
+г) Go- проект база данных postgres DB. 
+Веб сервер получает SQL запрос через URL. 
+Конектимся к базе данных postgres, используя lib/pq.
+Находим запрос. 
+Возвращаем в окно браузера ответ базы. 
+
+Попробовать как работает на моём сервере:
+3vb.ru:7007/sql?book_id=1
+Меняете значение book_id  и видите результат. 
+
+Посмотреть код на GitHub:
+https://github.com/Bokoffalexander/go_server_connect_postgres/tree/master
+##################################

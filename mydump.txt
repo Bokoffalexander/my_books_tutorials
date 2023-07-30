@@ -1,0 +1,46 @@
+UBUNTU
+sudo apt install postgresql
+
+sudo -u postgres psql
+
+CREATE DATABASE myproject;
+
+CREATE USER myprojectuser WITH PASSWORD 'password';
+
+ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
+ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE myprojectuser SET timezone TO 'UTC';
+
+GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
+
+\q
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py createsuperuser
+
+django_girls_admin
+Olordjesus
+
+
+from django.contrib.auth.models import User
+
+user = User.objects.create_user('user1','bokoffalexander@gmail.com','Heavenlyvision')
+user.save()
+
+
+python manage.py shell
+
+from django_girls_app.models import Topic
+from django.contrib.auth.models import User
+top = Topic(text="Who", owner=User.objects.get(id=2))
+top.save()
+
+>>> from django_girls_app.models import Topic
+>>> from django_girls_app.models import Entry
+>>> entr = Entry(text="I You We", topic=Topic.objects.get(id=11))
+>>> entr.save()
+>>> 
+

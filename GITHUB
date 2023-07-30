@@ -1,0 +1,31 @@
+GITHUB
+Сначала нужно сгенерировать ssh-ключи, а затем один из них (публичный) добавить
+в настройки профиля GitHub, а не репозитория, чтобы управлять всеми репозиториями.
+
+# Создание ssh-ключей
+ssh-keygen -t ed25519 -C "bokoffalexander@gmail.com"
+# Дальше будет несколько вопросов. На все вопросы нужно нажимать Enter.
+
+# Запуск агента ssh, который следит за ключами
+eval "$(ssh-agent -s)"
+
+# Добавления нового ssh-ключа в агент
+ssh-add ~/.ssh/id_ed25519
+
+# Скопируем публичный ключ
+cat /home/san/.ssh/id_ed25519.pub
+
+Создаем новый пустой репозиторий Bokoffalexander/project
+
+Git - через Терминал
+Заходим в директорию проекта на локальном компьютере,
+где у нас все файлы и вбиваем команды:
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin git@github.com:Bokoffalexander/project.git # А не https://..
+git push -u origin main
+
+(не просит ввести user и password)
+Если кто-то пушнул в репозиторий, то делаем git pull

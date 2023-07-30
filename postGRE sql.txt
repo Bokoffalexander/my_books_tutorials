@@ -1,0 +1,103 @@
+ДЛЯ UBUNTU
+
+First, execute the following command to create the file repository configuration:
+$ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+Second, import the repository signing key:
+$ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+Third, update the package list:
+$ sudo apt update
+
+Finally, install the latest version of PostgreSQL:
+$ sudo apt install postgresql
+
+
+
+
+
+$ sudo -i -u postgres
+
+To create a new database, in this example named mydb, you use the following command:
+$ createdb mydb
+
+you can destroy it using the following command:
+$ dropdb mydb
+
+Once you have created a database, you can access it by:
+• Running the PostgreSQL interactive terminal program, called psql, which allows you to interactively enter, edit, and execute SQL commands.
+$ psql mydb
+
+
+psql program has a number of internal commands that are not SQL commands. They begin with
+the backslash character, “\”
+
+
+psql
+
+SELECT version();
+
+SELECT current_date;
+
+SELECT 2 + 2;
+
+you can get help on the syntax of various PostgreSQL SQL
+commands by typing:
+\h
+
+\l   //это список баз данных
+
+\connect testdb    //это подключиться к базе с именем db_name
+
+\du  //– список users
+\db //– список БД
+\dt      //– список таблиц
+
+To get out of psql, type:
+\q
+
+
+После создания пользователя вы можете сменить пользователя (на sammy) и зайти в Postgres командами:
+sudo -i -u sammy
+psql
+
+
+
+
+select * from employee;
+
+CREATE TABLE employee (Id SERIAL PRIMARY KEY, FirstName CHARACTER VARYING(30), LastName CHARACTER VARYING(30), Email CHARACTER VARYING(30), Age INTEGER );
+
+INSERT INTO employee VALUES (1, 'Alex', 'Bokoff', 'bok@gmail.com', 30), (2, 'Kate','Bokova','bok_kate@gmail.com', 31), (3, 'Tanya','Larina','lar@gmail.com', 31);
+
+
+
+
+DROP TABLE tablename;
+DELETE FROM weather WHERE city = 'Hayward';
+
+create table book (book_id SERIAL PRIMARY KEY, title CHARACTER VARYING(50), author CHARACTER VARYING(30), price DECIMAL(8,2),amount INTEGER);
+
+
+INSERT INTO book VALUES (1, 'Мастер и Маргарита', 'Булгаков М.А.', 670.99, 3);
+INSERT INTO book VALUES (2, 'Белая гвардия', 'Булгаков М.А.', 540.50, 5);
+INSERT INTO book VALUES (3, 'Идиот', 'Достоевский Ф.М.', 460.00, 10);
+INSERT INTO book VALUES (4, 'Братья Карамазовы', 'Достоевский Ф.М.', 799.01, 3);
+INSERT INTO book VALUES (5, 'Игрок', 'Достоевский Ф.М.', 480.50, 10);
+INSERT INTO book VALUES (6, 'Стихотворения и поэмы', 'Есенин С.А.', 650.00, 15);
+
+book_id | title                 | author           | price  | amount |
++---------+-----------------------+------------------+--------+--------+
+| 1       | Мастер и Маргарита    | Булгаков М.А.    | 670.99 | 3      |
+| 2       | Белая гвардия         | Булгаков М.А.    | 540.50 | 5      |
+| 3       | Идиот                 | Достоевский Ф.М. | 460.00 | 10     |
+| 4       | Братья Карамазовы     | Достоевский Ф.М. | 799.01 | 3      |
+| 5       | Игрок                 | Достоевский Ф.М. | 480.50 | 10     |
+| 6       | Стихотворения и поэмы | Есенин С.А.      | 650.00 | 15  
+
+
+
+select * from book;
+
+
+select author, sum(price*amount) as "Стоимость" from book where title<>'Идиот' and title<>'Белая гвардия' group by author having sum(price*amount) > 5000 order by sum(price*amount) desc;
