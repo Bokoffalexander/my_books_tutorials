@@ -14,9 +14,16 @@ $ sudo apt install postgresql
 
 
 
-
+*******************************
+Логин в только что установленный postgreSQL сервер нужно производить под именем пользователя postgres:
 
 $ sudo -i -u postgres
+
+Для подключения к базе данных PostgreSQL можно использовать команду:
+
+psql -U<USERNAME> -h<HOSTNAME> -d<DB_NAME>
+
+*******************************
 
 To create a new database, in this example named mydb, you use the following command:
 $ createdb mydb
